@@ -1,4 +1,0 @@
-[submodule "data/raw"]
-	path = data/raw
-	url = git@github.com:wigginno/ecm-chemoresistance-rnaseq-analysis-data.git
-	branch = main
