@@ -21,11 +21,15 @@ RUN cd RangerBasediRF/cpp_version && \
     make
 RUN ln -s /RangerBasediRF/cpp_version/build/ranger /usr/local/bin/ranger
 
+RUN install2.r --error --deps TRUE renv tidyverse here httpgd ggpubr parallelly styler plotly htmlwidgets
+
+RUN R -e "BiocManager::install(c('DESeq2', 'apeglm'))"
+RUN R -e "BiocManager::install(c('edgeR', 'limma', 'sva'))"
+RUN R -e "BiocManager::install(c('TCGAbiolinks', 'clusterProfiler', 'org.Hs.eg.db'))"
+RUN R -e "BiocManager::install(c('fgsea', 'graph', 'msigdbr', 'enrichplot'))"
+
+RUN install2.r --error --deps TRUE igraph
+
 RUN pip install --upgrade pip wheel setuptools
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
-
-RUN install2.r --error --deps TRUE renv tidyverse here httpgd ggpubr parallelly styler
-
-RUN R -e "if (!requireNamespace('BiocManager', quietly = TRUE)) install.packages('BiocManager')"
-RUN R -e "BiocManager::install(c('DESeq2', 'apeglm', 'edgeR', 'limma', 'TCGAbiolinks', 'sva'))"
