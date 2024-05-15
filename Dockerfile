@@ -21,10 +21,11 @@ RUN cd RangerBasediRF/cpp_version && \
     make
 RUN ln -s /RangerBasediRF/cpp_version/build/ranger /usr/local/bin/ranger
 
+RUN pip install --upgrade pip wheel setuptools
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
 
-RUN install2.r --error --deps TRUE renv tidyverse here httpgd
+RUN install2.r --error --deps TRUE renv tidyverse here httpgd ggpubr parallelly styler
 
 RUN R -e "if (!requireNamespace('BiocManager', quietly = TRUE)) install.packages('BiocManager')"
-RUN R -e "BiocManager::install(c('DESeq2', 'edgeR', 'limma', 'TCGAbiolinks', 'sva'))"
+RUN R -e "BiocManager::install(c('DESeq2', 'apeglm', 'edgeR', 'limma', 'TCGAbiolinks', 'sva'))"

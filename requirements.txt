@@ -5,5 +5,7 @@ pandas
 scikit-learn
 scipy
 seaborn
+setuptools
 statsmodels
 xgboost
+rpy2
