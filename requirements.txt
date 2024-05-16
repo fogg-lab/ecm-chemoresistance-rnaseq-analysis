@@ -1,7 +1,9 @@
 black
 cvxpy
+nbformat
 numpy
 pandas
+plotly
 scikit-learn
 scipy
 seaborn

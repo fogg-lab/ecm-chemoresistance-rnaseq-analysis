@@ -26,9 +26,11 @@ RUN install2.r --error --deps TRUE renv tidyverse here httpgd ggpubr parallelly 
 RUN R -e "BiocManager::install(c('DESeq2', 'apeglm'))"
 RUN R -e "BiocManager::install(c('edgeR', 'limma', 'sva'))"
 RUN R -e "BiocManager::install(c('TCGAbiolinks', 'clusterProfiler', 'org.Hs.eg.db'))"
-RUN R -e "BiocManager::install(c('fgsea', 'graph', 'msigdbr', 'enrichplot'))"
+RUN R -e "BiocManager::install(c('fgsea', 'graph', 'msigdbr'))"
+RUN R -e "BiocManager::install(c('ReactomePA', 'federicomarini/pcaExplorer', 'rrvgo'))"
 
-RUN install2.r --error --deps TRUE igraph
+RUN install2.r --error --deps TRUE igraph reactable
+RUN install2.r --error --deps TRUE pheatmap treemap
 
 RUN pip install --upgrade pip wheel setuptools
 COPY requirements.txt /tmp/requirements.txt
