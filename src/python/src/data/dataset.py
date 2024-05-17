@@ -193,19 +193,7 @@ def parse_clinical_data(
     clean_clinical_data(clinical_data, keep_field_names)
     clinical_data = restructure_clinical_dict(clinical_data)
 
-    barcodes = list(clinical_data)
-    clinical_data_table = pd.json_normalize([clinical_data[bc] for bc in barcodes])
-    clinical_data_table.index = barcodes
-    clinical_data_table.index.name = "patient_barcode"
-
-    cols_to_keep = []
-    for col in clinical_data_table.columns:
-        for allowed_field in KEEP_FIELDNAMES:
-            if col == allowed_field or col.endswith(f".{allowed_field}"):
-                cols_to_keep.append(col)
-                break
-
-    return clinical_data_table[cols_to_keep]
+    return clinical_data
 
 
 def make_dataset():
