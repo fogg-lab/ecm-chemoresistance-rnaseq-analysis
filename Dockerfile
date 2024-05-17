@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     cmake \
     mpich \
-    git
+    git \
+    libglpk40
 
 # Install RangerBasediRF
 RUN git clone https://github.com/jailGroup/RangerBasediRF.git
@@ -23,16 +24,16 @@ RUN ln -s /RangerBasediRF/cpp_version/build/ranger /usr/local/bin/ranger
 
 RUN install2.r --error --deps TRUE renv tidyverse here httpgd ggpubr parallelly styler plotly htmlwidgets
 
-RUN R -e "BiocManager::install(c('DESeq2', 'apeglm'))"
-RUN R -e "BiocManager::install(c('edgeR', 'limma', 'sva'))"
-RUN R -e "BiocManager::install(c('TCGAbiolinks', 'clusterProfiler', 'org.Hs.eg.db'))"
-RUN R -e "BiocManager::install(c('fgsea', 'graph', 'msigdbr'))"
-RUN R -e "BiocManager::install(c('ReactomePA', 'federicomarini/pcaExplorer', 'rrvgo'))"
-RUN R -e "BiocManager::install(c('enrichplot'))"
+RUN R -e "BiocManager::install(c('DESeq2', 'apeglm'))" || exit 1
+RUN R -e "BiocManager::install(c('edgeR', 'limma', 'sva'))" || exit 1
+RUN R -e "BiocManager::install(c('TCGAbiolinks', 'clusterProfiler', 'org.Hs.eg.db'))" || exit 1
+RUN R -e "BiocManager::install(c('fgsea', 'graph', 'msigdbr'))" || exit 1
+RUN R -e "BiocManager::install(c('ReactomePA', 'rrvgo', 'enrichplot'))" || exit 1
 
 RUN install2.r --error --deps TRUE igraph
 RUN install2.r --error --deps TRUE pheatmap treemap
 
+# Set R_LIBS for the current command to ensure dependencies are found
 RUN git clone https://github.com/fogg-lab/ecm-chemoresistance-rnaseq-analysis.git && \
     cd ecm-chemoresistance-rnaseq-analysis/src/R && \
     R CMD build src && \
