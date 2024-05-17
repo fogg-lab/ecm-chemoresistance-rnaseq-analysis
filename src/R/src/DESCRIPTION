@@ -1,0 +1,26 @@
+Package: src
+Type: Package
+Title: src
+Version: 0.1.0
+Author: Noah Wiggin
+Maintainer: Noah Wiggin <wigginno@oregonstate.com>
+Description: Utilities for analyzing bulk RNA-seq data.
+License: MIT
+Imports:
+    DESeq2,
+    ggpubr,
+    ggrepel,
+    BiocParallel,
+    tibble,
+    data.table,
+    dplyr,
+    tidyr,
+    ggplot2,
+    BiocParallel,
+    AnnotationDbi,
+    org.Hs.eg.db,
+    clusterProfiler,
+    rrvgo,
+    enrichplot,
+    plotly
+RoxygenNote: 7.3.1

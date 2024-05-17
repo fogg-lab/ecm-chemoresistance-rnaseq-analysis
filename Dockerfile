@@ -29,8 +29,13 @@ RUN R -e "BiocManager::install(c('TCGAbiolinks', 'clusterProfiler', 'org.Hs.eg.d
 RUN R -e "BiocManager::install(c('fgsea', 'graph', 'msigdbr'))"
 RUN R -e "BiocManager::install(c('ReactomePA', 'federicomarini/pcaExplorer', 'rrvgo'))"
 
-RUN install2.r --error --deps TRUE igraph reactable
+RUN install2.r --error --deps TRUE igraph
 RUN install2.r --error --deps TRUE pheatmap treemap
+
+RUN git clone https://github.com/fogg-lab/ecm-chemoresistance-rnaseq-analysis.git && \
+    cd ecm-chemoresistance-rnaseq-analysis/src/R && \
+    R CMD build src && \
+    R CMD INSTALL src_0.1.0.tar.gz
 
 RUN pip install --upgrade pip wheel setuptools
 COPY requirements.txt /tmp/requirements.txt
