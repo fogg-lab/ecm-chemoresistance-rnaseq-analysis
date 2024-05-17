@@ -28,6 +28,7 @@ RUN R -e "BiocManager::install(c('edgeR', 'limma', 'sva'))"
 RUN R -e "BiocManager::install(c('TCGAbiolinks', 'clusterProfiler', 'org.Hs.eg.db'))"
 RUN R -e "BiocManager::install(c('fgsea', 'graph', 'msigdbr'))"
 RUN R -e "BiocManager::install(c('ReactomePA', 'federicomarini/pcaExplorer', 'rrvgo'))"
+RUN R -e "BiocManager::install(c('enrichplot'))"
 
 RUN install2.r --error --deps TRUE igraph
 RUN install2.r --error --deps TRUE pheatmap treemap
