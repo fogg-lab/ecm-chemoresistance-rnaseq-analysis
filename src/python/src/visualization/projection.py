@@ -34,20 +34,299 @@ def plot_explained_variance(df: pd.DataFrame):
     plt.legend(fontsize=14)
     plt.show()
 
-
-def interactive_scatterplot(data: pd.DataFrame, attributes: pd.DataFrame, title: str,
-                            num_dims: int, technique: str = "PCA") -> go.Figure:
+def make_fixed_len_color_sequence(original_colors: list, n: int):
     """
-    Generate an interactive scatterplot with plotly.
+    Create a new color sequence of length `n` from `original_colors` via interpolation.
+    """
+    colors_rgb = np.array(
+        [
+            color.replace("rgb(", "").replace(")", "").split(",")
+            for color in original_colors
+        ]
+    ).astype(int)
+    new_colors = []
+    color_index_scale_factor = (len(colors_rgb) - 1) / (n - 1)
+    for i in range(n):
+        position = i * color_index_scale_factor
+        index_1 = int(position)
+        index_2 = int(np.ceil(position))
+        t = position - index_1
+        new_color = (1 - t) * colors_rgb[index_1] + t * colors_rgb[index_2]
+        new_color = np.round(new_color).astype(int)
+        new_colors.append(f"rgb{tuple(new_color)}")
+    return new_colors
+
+def interactive_scatterplot_old(
+    components_df: pd.DataFrame,
+    color_col: str,
+    shape_col: str,
+    n_dims: int,
+    explained_variance: Optional[np.ndarray] = None,
+) -> go.Figure:
+    """
+    Plot an interactive scatter plot with samples colored by a categorical attribute and shaped by another attribute.
+    This function works for both PCA and UMAP plots.
+
+    Adapted from: https://stackoverflow.com/a/69733822/21293703
 
     Parameters:
-        data (pd.DataFrame): The input data, 1 row per point.
-        attributes (pd.DataFrame): The attributes/labels for the points.
+        components_df (pd.DataFrame): DataFrame containing components and metadata.
+        color_col the points by.
+        shape_col (str): The attribute to shape the points by.
         title (str): The title of the plot.
-        technique (str): Dimensionality reduction technique, PCA or UMAP. Default="PCA".
+        n_dims (int): Number of dimensions/components.
+        explained_variance (Optional[np.ndarray]): Array of explained variance ratios for each principal component. If None, assume UMAP.
 
     Returns:
-        go.Figure: The interactive scatterplot ready to be displayed or saved.
+        go.Figure: The plotly figure object.
     """
+    components_df = components_df.copy()
+    components_df["ID"] = "ID=" + components_df.index.astype(str)
+
+    components_df[color_col] = f"{color_col}=" + components_df[color_col].astype(str)
+    color_col_values = np.unique(components_df[color_col])
+    n_colors = len(color_col_values)
+    palette = px.colors.sequential.Jet[1:-1]
+    palette = make_fixed_len_color_sequence(palette, n_colors)
+    color_map = {
+        color_col_values[i]: palette[i % n_colors] for i in range(len(color_col_values))
+    }
+
+    # Map the shape attribute to shapes
+    shapes = ["circle", "diamond", "square", "triangle-up"]
+    components_df[shape_col] = f"{shape_col}=" + components_df[shape_col].astype(str)
+    shape_col_values = np.unique(components_df[shape_col])
+    shape_map = {
+        shape_col_values[i]: shapes[i % len(shapes)]
+        for i in range(len(shape_col_values))
+    }
+
+    if explained_variance is not None:
+        dims = [f"PC-{i+1}" for i in range(n_dims)]
+        dim_labels = {
+            f"PC-{i+1}": f"PC-{i+1} ({explained_variance[i]*100:.2f}% variance)"
+            for i in range(n_dims)
+        }
+    else:
+        dims = [f"UMAP-{i+1}" for i in range(n_dims)]
+        dim_labels = dict(zip(dims, dims))
+
+    fig = go.Figure(
+        go.Scatter(
+            x=components_df[dims[0]],
+            y=components_df[dims[1]],
+            customdata=components_df.loc[:, ["ID", color_col, shape_col]],
+            marker=dict(
+                color=components_df[color_col].map(color_map),
+                symbol=components_df[shape_col].map(shape_map),
+                size=10,
+            ),
+            mode="markers",
+            hovertemplate=f"%{{customdata[0]}}<br>%{{customdata[1]}}<br>%{{customdata[2]}}<extra></extra>",
+        )
+    ).update_layout(
+        template="presentation",
+        xaxis_title_text=dim_labels[dims[0]],
+        yaxis_title_text=dim_labels[dims[1]],
+        height=700,
+    )
+    fig.update_layout(
+        updatemenus=[
+            {
+                "active": 0 if ax == "x" else 1,
+                "buttons": [
+                    {
+                        "label": f"{dim_labels[dim]}",
+                        "method": "update",
+                        "args": [
+                            {f"{ax}": [components_df[dim]]},
+                            {f"{ax}axis": {"title": {"text": dim_labels[dim]}}},
+                            [0],
+                        ],
+                    }
+                    for dim in dims
+                ],
+                "y": 1 if ax == "x" else 0.9,
+            }
+            for ax in ["x", "y"]
+        ]
+    ).update_traces(showlegend=False)
+
+    # Add dummy traces for color legend and shape legend
+    for value, shape in shape_map.items():
+        fig.add_trace(
+            go.Scatter(
+                x=[None],
+                y=[None],
+                mode="markers",
+                marker=dict(symbol=shape, color="black", size=12),
+                showlegend=True,
+                name=value,
+            )
+        )
+    for value, color in color_map.items():
+        fig.add_trace(
+            go.Scatter(
+                x=[None],
+                y=[None],
+                mode="markers",
+                marker=dict(color=color, size=10),
+                showlegend=True,
+                name=value,
+            )
+        )
+
+    fig.update_layout(
+        legend_itemclick=False,
+        legend_itemdoubleclick=False,
+    )
+
+    fig.show()
+    return fig
 
 
+import plotly.graph_objs as go
+import pandas as pd
+import numpy as np
+import plotly.express as px
+from typing import Optional
+
+def make_fixed_len_color_sequence(palette, n_colors):
+    return [palette[i % len(palette)] for i in range(n_colors)]
+
+def interactive_scatterplot(
+    components_df: pd.DataFrame,
+    color_col: str,
+    shape_col: str,
+    n_dims: int,
+    explained_variance: Optional[np.ndarray] = None,
+) -> go.Figure:
+    """
+    Plot an interactive scatter plot with samples colored by a categorical attribute and shaped by another attribute.
+    This function works for both PCA and UMAP plots.
+
+    Adapted from: https://stackoverflow.com/a/69733822/21293703
+
+    Parameters:
+        components_df (pd.DataFrame): DataFrame containing components and metadata.
+        color_col (str): The attribute to color the points by.
+        shape_col (str): The attribute to shape the points by.
+        n_dims (int): Number of dimensions/components.
+        explained_variance (Optional[np.ndarray]): Array of explained variance ratios for each principal component. If None, assume UMAP.
+
+    Returns:
+        go.Figure: The plotly figure object.
+    """
+    components_df = components_df.copy()
+    components_df["ID"] = "ID=" + components_df.index.astype(str)
+
+    components_df[color_col] = f"{color_col}=" + components_df[color_col].astype(str)
+    color_col_values = np.unique(components_df[color_col])
+    n_colors = len(color_col_values)
+    palette = px.colors.sequential.Jet[1:-1]
+    palette = make_fixed_len_color_sequence(palette, n_colors)
+    color_map = {
+        color_col_values[i]: palette[i % n_colors] for i in range(len(color_col_values))
+    }
+
+    # Map the shape attribute to shapes
+    shapes = ["circle", "diamond", "square", "triangle-up"]
+    components_df[shape_col] = f"{shape_col}=" + components_df[shape_col].astype(str)
+    shape_col_values = np.unique(components_df[shape_col])
+    shape_map = {
+        shape_col_values[i]: shapes[i % len(shapes)]
+        for i in range(len(shape_col_values))
+    }
+
+    if explained_variance is not None:
+        dims = [f"PC-{i+1}" for i in range(n_dims)]
+        dim_labels = {
+            f"PC-{i+1}": f"PC-{i+1} ({explained_variance[i]*100:.2f}% variance)"
+            for i in range(n_dims)
+        }
+    else:
+        dims = [f"UMAP-{i+1}" for i in range(n_dims)]
+        dim_labels = dict(zip(dims, dims))
+
+    fig = go.Figure(
+        go.Scatter3d(
+            x=components_df[dims[0]],
+            y=components_df[dims[1]],
+            z=components_df[dims[2]],
+            customdata=components_df.loc[:, ["ID", color_col, shape_col]],
+            marker=dict(
+                color=components_df[color_col].map(color_map),
+                symbol=components_df[shape_col].map(shape_map),
+                size=5,
+            ),
+            mode="markers",
+            hovertemplate=f"%{{customdata[0]}}<br>%{{customdata[1]}}<br>%{{customdata[2]}}<extra></extra>",
+            showlegend=False,
+        )
+    ).update_layout(
+        template="presentation",
+        scene=dict(
+            xaxis_title_text=dim_labels[dims[0]],
+            yaxis_title_text=dim_labels[dims[1]],
+            zaxis_title_text=dim_labels[dims[2]],
+        ),
+        height=700,
+    )
+
+    if n_dims > 3:
+        axes = ["x", "y", "z"]
+        fig.update_layout(
+            updatemenus=[
+                {
+                    "active": axes.index(ax),
+                    "buttons": [
+                        {
+                            "label": f"{dim_labels[dim]}",
+                            "method": "update",
+                            "args": [
+                                {f"{ax}": [components_df[dim]]},
+                                {f"{ax}axis": {"title": {"text": dim_labels[dim]}}},
+                                [0],
+                            ],
+                        }
+                        for dim in dims
+                    ],
+                    "y": 1.1 - (.1 * (axes.index(ax) + 1)),
+                }
+                for ax in axes
+            ]
+        ).update_traces(showlegend=False)
+
+    # Add dummy traces for color legend and shape legend
+    for value, shape in shape_map.items():
+        fig.add_trace(
+            go.Scatter3d(
+                x=[None],
+                y=[None],
+                z=[None],
+                mode="markers",
+                marker=dict(symbol=shape, color="black", size=12),
+                showlegend=True,
+                name=value,
+            )
+        )
+    for value, color in color_map.items():
+        fig.add_trace(
+            go.Scatter3d(
+                x=[None],
+                y=[None],
+                z=[None],
+                mode="markers",
+                marker=dict(color=color, size=5),
+                showlegend=True,
+                name=value,
+            )
+        )
+
+    fig.update_layout(
+        legend_itemclick=False,
+        legend_itemdoubleclick=False,
+    )
+
+    fig.show()
+    return fig

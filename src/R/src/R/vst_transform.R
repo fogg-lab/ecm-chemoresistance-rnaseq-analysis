@@ -46,6 +46,7 @@ vst_transform <- function(counts_file, coldata_file, output_dir, design_formula_
     } else {
         design_formula <- "~ 1"
     }
+    cat("Design formula:", design_formula, "\n")
 
     dds <- DESeqDataSetFromMatrix(
         countData = counts, colData = coldata,

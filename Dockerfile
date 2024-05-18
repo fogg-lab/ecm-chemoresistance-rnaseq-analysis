@@ -37,7 +37,8 @@ RUN install2.r --error --deps TRUE pheatmap treemap
 RUN git clone https://github.com/fogg-lab/ecm-chemoresistance-rnaseq-analysis.git && \
     cd ecm-chemoresistance-rnaseq-analysis/src/R && \
     R CMD build src && \
-    R CMD INSTALL src_0.1.0.tar.gz
+    R CMD INSTALL src_0.1.0.tar.gz && \
+    pip install -e ../python
 
 RUN pip install --upgrade pip wheel setuptools
 COPY requirements.txt /tmp/requirements.txt

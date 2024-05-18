@@ -1,9 +1,11 @@
 black
 cvxpy
+fastcluster
 nbformat
 numpy
 pandas
 plotly
+pyarrow
 scikit-learn
 scipy
 seaborn
