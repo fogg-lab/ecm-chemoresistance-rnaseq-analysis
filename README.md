@@ -2,7 +2,7 @@
 
 Identify extracellular matrix (ECM) components that are associated with chemotherapy drug resistance in endometrial cancer and cervical cancer.
 
-GitHub.io site (work in progress): https://fogg-lab.github.io/ecm-chemoresistance-rnaseq-analysis/
+GitHub.io site (at the moment the page contains figures generated from analysis on TCGA-CESC): https://fogg-lab.github.io/ecm-chemoresistance-rnaseq-analysis/
 
 ## Setup
 
