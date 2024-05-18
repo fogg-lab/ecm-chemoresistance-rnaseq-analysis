@@ -12,5 +12,5 @@ git clone --recurse-submodules https://github.com/fogg-lab/ecm-chemoresistance-r
 
 ### Environment setup
 
-- Recommended (fast): Pull the prebuilt Docker container image from docker.io/wigginno/rna
-- Alternatively, build it yourself using the Dockerfile
+- Recommended (fast): Build the devcontainer or pull the prebuilt Docker container image from docker.io/wigginno/rna (see the environment spec file .devcontainer/devcontainer.json).
+- Alternatively, build the container image yourself using the Dockerfile.
