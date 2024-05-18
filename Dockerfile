@@ -30,7 +30,6 @@ RUN R -e "BiocManager::install(c('TCGAbiolinks', 'clusterProfiler', 'org.Hs.eg.d
 RUN R -e "BiocManager::install(c('fgsea', 'graph', 'msigdbr'))" || exit 1
 RUN R -e "BiocManager::install(c('ReactomePA', 'rrvgo', 'enrichplot'))" || exit 1
 
-RUN install2.r --error --deps TRUE igraph
 RUN install2.r --error --deps TRUE pheatmap treemap
 
 # Set R_LIBS for the current command to ensure dependencies are found
