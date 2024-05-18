@@ -1,2 +1,5 @@
 notebooks/*.ipynb linguist-vendored
 reveal.js/** linguist-vendored
+index.html linguist-vendored
+src/python/src/** linguist-detectable
+src/R/src/R/** linguist-detectable
