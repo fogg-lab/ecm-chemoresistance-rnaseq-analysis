@@ -32,6 +32,8 @@ RUN R -e "BiocManager::install(c('ReactomePA', 'rrvgo', 'enrichplot'))" || exit 
 
 RUN install2.r --error --deps TRUE pheatmap treemap
 
+ARG CACHEBUST=1
+
 # Set R_LIBS for the current command to ensure dependencies are found
 RUN git clone https://github.com/fogg-lab/ecm-chemoresistance-rnaseq-analysis.git && \
     cd ecm-chemoresistance-rnaseq-analysis/src/R && \
