@@ -4,91 +4,109 @@
     <meta charset="utf-8">
     <title>TCGA-CESC</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="reveal.js/css/reveal.css">
-    <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
-    <link rel="stylesheet" href="reveal.js/lib/css/monokai.css">
+    <link rel="stylesheet" href="reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="reveal.js/dist/theme/white.css" id="theme">
+    <link rel="stylesheet" href="reveal.js/plugin/highlight/monokai.css">
+    <style>
+        .reveal {
+            height: auto;
+        }
+        .slides {
+            display: block;
+        }
+        .slides section {
+            height: auto;
+            margin-bottom: 50px;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    </style>
 </head>
 <body>
     <div class="reveal">
         <div class="slides">
             <!-- 1: 3D PCA (All genes) -->
             <section>
-                <h2>PCA (All protein-encoding genes)</h2>
+                <h3>PCA (All protein-encoding genes)</h3>
                 <iframe src="reports/figures/pca_CESC.html" width="100%" height="700px"></iframe>
             </section>
 
             <!-- 2: 3D PCA (Matrisome genes)-->
             <section>
-                <h2>PCA (Matrisome genes)</h2>
+                <h3>PCA (Matrisome genes)</h3>
                 <iframe src="reports/figures/pca_matrisome_CESC.html" width="100%" height="700px"></iframe>
             </section>
 
             <!-- 3: 3D PCA (Core matrisome genes) -->
             <section>
-                <h2>PCA (Core matrisome genes)</h2>
+                <h3>PCA (Core matrisome genes)</h3>
                 <iframe src="reports/figures/pca_core_matrisome_CESC.html" width="100%" height="700px"></iframe>
             </section>
 
             <!-- 4: 3D UMAP (All genes) -->
             <section>
-                <h2>UMAP (All protein-encoding genes)</h2>
+                <h3>UMAP (All protein-encoding genes)</h3>
                 <iframe src="reports/figures/umap_CESC.html" width="100%" height="700px"></iframe>
             </section>
 
             <!-- 5: 3D UMAP (Matrisome genes) -->
             <section>
-                <h2>UMAP (Matrisome genes)</h2>
+                <h3>UMAP (Matrisome genes)</h3>
                 <iframe src="reports/figures/umap_matrisome_CESC.html" width="100%" height="700px"></iframe>
             </section>
 
             <!-- 6: 3D UMAP (Core matrisome genes) -->
             <section>
-                <h2>UMAP (Core matrisome genes)</h2>
+                <h3>UMAP (Core matrisome genes)</h3>
                 <iframe src="reports/figures/umap_core_matrisome_CESC.html" width="100%" height="700px"></iframe>
             </section>
 
             <!-- 7: Volcano plot -->
             <section>
-                <h2>Volcano Plot</h2>
+                <h3>Volcano Plot</h3>
                 <img src="reports/figures/volcano_plot_CESC.png" alt="Volcano Plot CESC" style="width:100%;">
             </section>
 
             <!-- 8: Mean difference -->
             <section>
-                <h2>Mean Difference</h2>
+                <h3>Mean Difference</h3>
                 <img src="reports/figures/mean_difference_CESC.png" alt="Mean Difference CESC" style="width:100%;">
             </section>
 
             <!-- 9: Treemap -->
             <section>
-                <h2>Treemap</h2>
+                <h3>Treemap</h3>
                 <img src="reports/figures/treemap_CESC.png" alt="Treemap CESC" style="width:100%;">
             </section>
 
             <!-- 10: Scatter -->
             <section>
-                <h2>Scatter</h2>
+                <h3>Scatter Plot</h3>
                 <img src="reports/figures/scatter_CESC.png" alt="Scatter CESC" style="width:100%;">
             </section>
 
             <!-- 11: Heatmap -->
             <section>
-                <h2>Heatmap</h2>
+                <h3>Heatmap (Similarity matrix of enriched GO terms)</h3>
                 <img src="reports/figures/heatmap_CESC.png" alt="Heatmap CESC" style="width:100%;">
             </section>
 
             <!-- 12: Gene Concept Network Plot -->
             <section>
-                <h2>Gene Concept Network Plot</h2>
+                <h3>Gene Concept Network Plot</h3>
                 <iframe src="reports/figures/gene_concept_network_CESC.html" width="100%" height="700px"></iframe>
             </section>
         </div>
     </div>
 
-    <script src="reveal.js/lib/js/head.min.js"></script>
-    <script src="reveal.js/js/reveal.js"></script>
+    <script src="reveal.js/dist/reveal.js"></script>
+    <script src="reveal.js/plugin/highlight/highlight.js"></script>
     <script>
-        Reveal.initialize();
+        Reveal.initialize({
+            view: 'scroll',
+            scrollProgress: true
+        });
     </script>
 </body>
 </html>
