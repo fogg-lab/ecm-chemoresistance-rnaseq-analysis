@@ -2,17 +2,17 @@
 
 Identify extracellular matrix (ECM) components that are associated with chemotherapy drug resistance in endometrial cancer and cervical cancer.
 
-GitHub.io site (at the moment the page contains figures generated from analysis on TCGA-CESC): https://fogg-lab.github.io/ecm-chemoresistance-rnaseq-analysis/
+Link to github.io page (currently contains figures generated from analysis on TCGA-CESC): https://fogg-lab.github.io/ecm-chemoresistance-rnaseq-analysis/
 
 ## Setup
 
-### Clone repo
+### 1. Clone repo
 
 ```bash
 git clone --recurse-submodules https://github.com/fogg-lab/ecm-chemoresistance-rnaseq-analysis.git
 ```
 
-### Environment setup
+### 2. Set up environment
 
 - Recommended (fast): Build the devcontainer or pull the prebuilt Docker container image from docker.io/wigginno/rna (see the environment spec file .devcontainer/devcontainer.json).
 - Alternatively, build the container image yourself using the Dockerfile.
