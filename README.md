@@ -4,7 +4,7 @@ Identify extracellular matrix (ECM) components that are associated with chemothe
 
 Link to github.io page (currently contains figures generated from analysis on TCGA-CESC): https://fogg-lab.github.io/ecm-chemoresistance-rnaseq-analysis/
 
-## Setup
+## Instructions
 
 ### 1. Clone repo
 
@@ -18,3 +18,6 @@ git clone --recurse-submodules https://github.com/fogg-lab/ecm-chemoresistance-r
 - Alternatively, build the container image yourself using the Dockerfile.
 - Alternatively, set up a GitHub Codespace from this repo. Select options: repository: fogg-lab/ecm-chemoresistance-rnaseq-analysis, branch: main, dev container config: rna, region: whatever you want, machine type: at least 2-core 8gb
 
+### 3. Reproduce results
+
+Run the notebooks in sequential order.
