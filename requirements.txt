@@ -6,6 +6,7 @@ numpy
 pandas
 plotly
 pyarrow
+requests
 scikit-learn
 scipy
 seaborn
