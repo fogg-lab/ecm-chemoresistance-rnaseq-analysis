@@ -1,15 +1,16 @@
 black
 cvxpy
 fastcluster
+ipykernel
 nbformat
 numpy
 pandas
 plotly
 pyarrow
-requests
 scikit-learn
 scipy
 seaborn
 statsmodels
 xgboost
+requests
 rpy2
