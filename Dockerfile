@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     cmake \
     mpich \
     git \
+    git-lfs \
     libglpk40
 
 # Install RangerBasediRF
