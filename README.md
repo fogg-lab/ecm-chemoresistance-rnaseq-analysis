@@ -8,6 +8,8 @@ Link to github.io page (currently contains figures generated from analysis on TC
 
 ### 1. Clone repo
 
+**Important**: Make sure [git lfs](https://git-lfs.com/) is installed before running:
+
 ```bash
 git clone --recurse-submodules https://github.com/fogg-lab/ecm-chemoresistance-rnaseq-analysis.git
 ```
