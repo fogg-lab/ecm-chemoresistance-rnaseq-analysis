@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+from scipy.cluster import hierarchy
 
 
 def read_data(counts_file: str, coldata_file: str) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -35,8 +36,12 @@ def calculate_correlation(counts: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: The correlation matrix.
     """
-    corr_matrix = np.corrcoef(counts.T)
-    return pd.DataFrame(corr_matrix, index=counts.columns, columns=counts.columns)
+    corr = np.corrcoef(counts.T)
+    corr = pd.DataFrame(corr, index=counts.columns, columns=counts.columns)
+    # return correlation matrix with samples sorted based on hierarchical clustering
+    linkage = hierarchy.linkage(corr, method="average")
+    samp_order = hierarchy.dendrogram(linkage, no_plot=True)["leaves"]
+    return corr.iloc[samp_order, samp_order]
 
 
 def create_heatmap(
@@ -70,13 +75,16 @@ def create_heatmap(
             ],
             hoverinfo="text+z",
             colorscale="Viridis",
+            colorbar=dict(
+                title="<b>r</b>",
+            ),
         )
     )
 
     fig.update_layout(
-        title="Sample-to-Sample Correlation Heatmap",
-        xaxis_title="Samples",
-        yaxis_title="Samples",
+        title="Sample-to-Sample Pearson Correlation Heatmap<br><sup>Hover over cells to see sample information</sup>",
+        xaxis=dict(showticklabels=False, title=None),
+        yaxis=dict(showticklabels=False, title=None),
         width=800,
         height=800,
     )
