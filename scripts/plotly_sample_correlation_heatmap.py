@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import numpy as np
 import pandas as pd
@@ -56,12 +57,22 @@ def create_heatmap(
         output_dir (str): Directory to save the output HTML file.
 
     """
-    hover_text = []
-    for sample in corr_matrix.index:
+
+    def get_sample_info(sample):
         sample_info = [f"{sample}"]
-        for trait, value in coldata.loc[sample].items():
+        for trait, value in list(coldata.loc[sample].items())[:5]:
             sample_info.append(f"{trait}: {value}")
-        hover_text.append("<br>".join(sample_info))
+        return "<br>".join(sample_info)
+
+    hover_text = [
+        [
+            f"X Sample:<br>{get_sample_info(x)}<br><br>"
+            f"Y Sample:<br>{get_sample_info(y)}<br><br>"
+            f"r = {corr_matrix.loc[y, x]:.4f}"
+            for x in corr_matrix.columns
+        ]
+        for y in corr_matrix.index
+    ]
 
     fig = go.Figure(
         data=go.Heatmap(
@@ -69,15 +80,13 @@ def create_heatmap(
             x=corr_matrix.columns,
             y=corr_matrix.index,
             hoverongaps=False,
-            text=[
-                [hover_text[i]] * len(corr_matrix.columns)
-                for i in range(len(corr_matrix.index))
-            ],
-            hoverinfo="text+z",
+            text=hover_text,
+            hoverinfo="text",
             colorscale="Viridis",
             colorbar=dict(
                 title="<b>r</b>",
             ),
+            hovertemplate="%{text}<extra></extra>",
         )
     )
 
@@ -87,11 +96,27 @@ def create_heatmap(
         yaxis=dict(showticklabels=False, title=None),
         width=800,
         height=800,
+        hoverlabel=dict(
+            bgcolor="rgb(255, 255, 255)",
+            font=dict(color="black"),
+        ),
     )
 
     os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.join(output_dir, "sample_correlation_heatmap.html")
     fig.write_html(output_file)
+
+    # Add CSS to make the hover box 60% transparent
+    # This is a workaround for the issue with the hover box covering the heatmap
+    # First thought would be to change the hoverlabel bgcolor to rgba(255, 255, 255, 0.4)
+    # but this has no effect unless hovermode="x unified" is also set. what the heck plotly
+    with open(output_file, "r") as f:
+        html = f.read()
+    css = "<style>.hovertext { fill-opacity: 0.4; stroke-opacity: 1; }</style>"
+    html = html.replace("</head>", f"{css}</head>")
+    with open(output_file, "w") as f:
+        f.write(html)  # write the modified html back to the file
+
     print(f"Saved sample correlation heatmap to {output_file}")
 
 
